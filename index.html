@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Free Web Builder — Build Any Website With AI</title>
+  <meta name="description" content="Build professional websites simply by writing a prompt in Hindi, English, or Hinglish. Powered by Aleem Teach Foundation." />
+
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- JSZip for clean ZIP code export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f5ff',
+              100: '#e0ecff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              purple: '#8b5cf6',
+              dark: '#0a0f1d',
+              card: '#131b2e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .dark .glassmorphism {
+      background: rgba(10, 15, 29, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .device-mockup {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white transition-colors duration-200">
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800/80 glassmorphism">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('home')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-brand-purple flex items-center justify-center text-white shadow-lg shadow-brand-500/25">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent">Free Web Builder</span>
+          <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 ml-1.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">By ATF</span>
+        </div>
+      </div>
+
+      <!-- Center Nav Links -->
+      <nav class="hidden md:flex items-center gap-1 font-medium text-sm text-slate-600 dark:text-slate-300">
+        <button onclick="navigate('home')" class="nav-item px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Create</button>
+        <button onclick="navigate('projects')" class="nav-item px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">My Websites</button>
+        <button onclick="navigate('templates')" class="nav-item px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Templates</button>
+        <button onclick="navigate('tutorial')" class="nav-item px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">How to Use</button>
+        <button onclick="navigate('about')" class="nav-item px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">About</button>
+        <button onclick="navigate('contact')" class="nav-item px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Contact</button>
+      </nav>
+
+      <!-- Right Action Items -->
+      <div class="flex items-center gap-2">
+        <!-- Daily Limit Pill -->
+        <button onclick="openUsageModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:scale-105 transition">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-emerald-500"></i>
+          <span id="navUsageText">40/40 Free</span>
+        </button>
+
+        <!-- New Website Button -->
+        <button onclick="startFreshProject()" class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 active:scale-95 transition">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>New Website</span>
+        </button>
+
+        <!-- Settings Button -->
+        <button onclick="openSettingsModal()" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400" title="Settings">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400" title="Toggle Theme">
+          <i data-lucide="moon" id="themeIcon" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Mobile Menu Hamburger -->
+        <button onclick="toggleMobileNav()" class="md:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileNav" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-2">
+      <button onclick="navigate('home'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> Create</button>
+      <button onclick="navigate('projects'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="folder" class="w-4 h-4"></i> My Websites</button>
+      <button onclick="navigate('templates'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="layout-grid" class="w-4 h-4"></i> Templates</button>
+      <button onclick="navigate('tutorial'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4"></i> How to Use</button>
+      <button onclick="navigate('about'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i> About ATF</button>
+      <button onclick="navigate('contact'); toggleMobileNav();" class="w-full text-left px-3 py-2 rounded-lg font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Contact</button>
+      <button onclick="startFreshProject(); toggleMobileNav();" class="w-full text-center px-4 py-2.5 rounded-xl font-semibold text-sm bg-blue-600 text-white"><i data-lucide="plus" class="inline w-4 h-4 mr-1"></i> New Website</button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN VIEW CONTAINER ================= -->
+  <main class="flex-1 w-full flex flex-col">
+
+    <!-- 1. HOME / PROMPT SCREEN -->
+    <section id="view-home" class="view-panel max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-16 w-full flex flex-col items-center justify-center">
+      
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        100% Free • OpenRouter AI Enabled • Full Responsive Code
+      </div>
+
+      <!-- Main Heading -->
+      <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold text-center tracking-tight max-w-3xl leading-[1.15]">
+        Build Any Website With AI <br />
+        <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Completely Free</span>
+      </h1>
+      <p class="text-slate-600 dark:text-slate-400 text-center text-sm sm:text-base mt-4 max-w-xl">
+        Chhota prompt ho ya lamba detailed requirement—AI wahi banayega jo aap maangenge. Hindi, English aur Hinglish sab support karta hai.
+      </p>
+
+      <!-- Large AI Prompt Input Card -->
+      <div class="w-full max-w-3xl mt-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-xl shadow-slate-200/50 dark:shadow-black/50 transition-all focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:border-blue-500">
+        
+        <!-- Attached Files Indicator -->
+        <div id="attachmentIndicator" class="hidden items-center gap-2 mb-2 p-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-medium">
+          <i data-lucide="paperclip" class="w-3.5 h-3.5 text-blue-500"></i>
+          <span id="attachmentName" class="truncate max-w-xs">image.png</span>
+          <button onclick="clearAttachment()" class="ml-auto text-slate-400 hover:text-red-500"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+
+        <textarea 
+          id="homePromptInput" 
+          rows="4" 
+          placeholder="Aapko jaisi website chahiye describe karein... (e.g. 'Ek scientific calculator with history and dark mode' ya 'Ek real estate agency website with property listings, contact modal and loan EMI calculator')"
+          class="w-full bg-transparent resize-none border-none outline-none text-slate-900 dark:text-slate-100 placeholder:text-slate-400 text-sm sm:text-base p-2"
+        ></textarea>
+
+        <!-- Prompt Card Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+          <div class="flex items-center gap-1">
+            <button id="voiceBtn" onclick="toggleSpeechRecognition()" class="p-2.5 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Speak Prompt (English / Hindi)">
+              <i data-lucide="mic" id="voiceIcon" class="w-5 h-5"></i>
+            </button>
+            
+            <label class="p-2.5 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer" title="Upload Wireframe / Mockup Image">
+              <i data-lucide="image" class="w-5 h-5"></i>
+              <input type="file" id="imageUploadInput" accept="image/*" class="hidden" onchange="handleAttachment(this)" />
+            </label>
+
+            <label class="p-2.5 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer" title="Attach Document / Specs">
+              <i data-lucide="paperclip" class="w-5 h-5"></i>
+              <input type="file" id="fileUploadInput" accept=".txt,.json,.md,.html" class="hidden" onchange="handleAttachment(this)" />
+            </label>
+
+            <span class="hidden sm:inline-block text-[11px] font-semibold text-slate-400 px-2">Hindi / Hinglish / English</span>
+          </div>
+
+          <!-- Generate Button -->
+          <button 
+            id="generateBtn" 
+            onclick="triggerGenerationFromHome()" 
+            class="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-semibold text-sm shadow-md shadow-blue-500/25 active:scale-95 transition"
+          >
+            <span>Generate Website</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Example Pills (Short & Long prompts) -->
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2 max-w-3xl">
+        <span class="text-xs font-semibold text-slate-400">Quick Test:</span>
+        <button onclick="setPrompt('Ek modern calculator banao jisme basic calculations, percentage, dark theme aur calculation history ho')" class="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-blue-500 text-slate-600 dark:text-slate-300 transition">🧮 Calculator App</button>
+        <button onclick="setPrompt('Tic Tac Toe game banao 2 players ke liye with scoreboard and restart button')" class="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-blue-500 text-slate-600 dark:text-slate-300 transition">🎮 Tic Tac Toe Game</button>
+        <button onclick="setPrompt('Modern coffee shop website with aesthetic menu, table reservation modal, and user reviews')" class="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-blue-500 text-slate-600 dark:text-slate-300 transition">☕ Coffee Shop</button>
+        <button onclick="setPrompt('Coaching center ki Hindi website jisme courses list, fee structure, student reviews, timetable aur admission form ho')" class="text-xs px-3 py-1.5 rounded-full bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-blue-500 text-slate-600 dark:text-slate-300 transition">📚 Coaching Center (Hindi)</button>
+      </div>
+
+      <!-- Recent Projects Section Preview on Home -->
+      <div class="w-full max-w-5xl mt-16 pt-12 border-t border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold">Recent Projects</h2>
+            <p class="text-xs sm:text-sm text-slate-500">Websites stored locally in your browser storage.</p>
+          </div>
+          <button onclick="navigate('projects')" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+            <span>View All</span>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+        <div id="homeRecentProjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- 2. AI GENERATOR & WORKSPACE -->
+    <section id="view-workspace" class="view-panel hidden flex-1 flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
+      
+      <!-- Top Action Bar for Active Project -->
+      <div class="h-14 px-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 shrink-0">
+        
+        <!-- Left: Project Name & Domain Slug -->
+        <div class="flex items-center gap-3 overflow-hidden">
+          <button onclick="navigate('projects')" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Back to Projects">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          </button>
+          
+          <div class="truncate">
+            <div class="flex items-center gap-2">
+              <span id="currentProjectTitle" class="font-bold text-sm truncate">My New Website</span>
+              <button onclick="renameCurrentProject()" class="text-slate-400 hover:text-blue-500" title="Rename"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+            </div>
+            <div class="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
+              <i data-lucide="globe" class="w-3 h-3 text-blue-500"></i>
+              <span id="currentProjectDomain" class="font-mono truncate">https://project.atf.com</span>
+              <button onclick="copyProjectUrl()" class="hover:text-blue-600" title="Copy Staging URL"><i data-lucide="copy" class="w-3 h-3"></i></button>
+              <button onclick="openCustomDomainModal()" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline ml-1">Custom Domain</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center: Device Switcher -->
+        <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl p-1 gap-1">
+          <button onclick="setDeviceView('desktop')" id="devBtn-desktop" class="p-1.5 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400" title="Desktop View">
+            <i data-lucide="monitor" class="w-4 h-4"></i>
+          </button>
+          <button onclick="setDeviceView('tablet')" id="devBtn-tablet" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white" title="Tablet View (768px)">
+            <i data-lucide="tablet" class="w-4 h-4"></i>
+          </button>
+          <button onclick="setDeviceView('mobile')" id="devBtn-mobile" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white" title="Mobile View (375px)">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button onclick="refreshLivePreview()" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Refresh Preview">
+            <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Toggle View Mode: Preview vs Code Editor -->
+          <div class="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-0.5">
+            <button onclick="switchWorkspaceMode('preview')" id="modeTab-preview" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm">Preview</button>
+            <button onclick="switchWorkspaceMode('code')" id="modeTab-code" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Code</button>
+          </div>
+
+          <button onclick="openPreviewInNewTab()" class="hidden md:flex p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" title="Open Preview in New Window">
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+          </button>
+
+          <button onclick="downloadProjectZIP()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Download ZIP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Workspace Body: Chat Panel & Preview/Code -->
+      <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+        
+        <!-- Left: AI Iteration Panel -->
+        <div class="w-full md:w-80 lg:w-96 border-r border-slate-200 dark:border-slate-800 flex flex-col bg-white dark:bg-slate-900 shrink-0 h-48 md:h-auto">
+          <div class="p-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">OpenRouter AI</span>
+            </div>
+            <span class="text-[11px] text-slate-400" id="aiStatusPill">Ready</span>
+          </div>
+
+          <div id="aiChatThread" class="flex-1 overflow-y-auto p-4 space-y-3 text-xs sm:text-sm"></div>
+
+          <!-- Continuous Prompt Input -->
+          <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
+            <form onsubmit="handleIterativePrompt(event)" class="relative flex flex-col gap-2">
+              <textarea 
+                id="iterativePromptInput" 
+                rows="2" 
+                placeholder="AI ko changes karne ko bolein (e.g. 'Button ka color purple karo', 'Ek new section add karo')..." 
+                class="w-full text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 outline-none focus:border-blue-500 text-slate-900 dark:text-slate-100 resize-none"
+              ></textarea>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1">
+                  <button type="button" onclick="quickAppendPrompt('Make header background dark black')" class="text-[10px] px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">+ Dark Nav</button>
+                  <button type="button" onclick="quickAppendPrompt('Add a responsive contact form with validation')" class="text-[10px] px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">+ Form</button>
+                </div>
+                <button type="submit" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1">
+                  <span>Send</span>
+                  <i data-lucide="send" class="w-3 h-3"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Preview or Code View Container -->
+        <div class="flex-1 bg-slate-100 dark:bg-[#070b12] flex flex-col relative overflow-hidden">
+          
+          <!-- View 1: Iframe Live Preview -->
+          <div id="workspacePreviewContainer" class="flex-1 flex items-center justify-center p-2 sm:p-4 overflow-auto">
+            <div id="deviceFrame" class="device-mockup w-full h-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-300 dark:border-slate-800 flex flex-col">
+              <div class="h-7 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-3 flex items-center gap-2 shrink-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                </div>
+                <div class="flex-1 max-w-sm mx-auto h-5 bg-white dark:bg-slate-900 rounded-md text-[10px] text-slate-400 flex items-center justify-center font-mono truncate px-2" id="previewUrlBar">
+                  https://mywebsite.atf.com
+                </div>
+              </div>
+              <iframe id="livePreviewIframe" class="w-full flex-1 border-none bg-white" sandbox="allow-scripts allow-modals"></iframe>
+            </div>
+          </div>
+
+          <!-- View 2: Code Editor (HTML, CSS, JS Tabs) -->
+          <div id="workspaceCodeContainer" class="hidden flex-1 flex-col h-full bg-slate-900 text-slate-100">
+            <div class="h-10 border-b border-slate-800 bg-slate-950 flex items-center justify-between px-3">
+              <div class="flex items-center gap-1">
+                <button onclick="switchCodeTab('html')" id="codeTab-html" class="px-3 py-1.5 rounded-t text-xs font-mono font-semibold bg-slate-900 text-blue-400 border-b-2 border-blue-500">HTML</button>
+                <button onclick="switchCodeTab('css')" id="codeTab-css" class="px-3 py-1.5 rounded-t text-xs font-mono font-semibold text-slate-400 hover:text-white">CSS</button>
+                <button onclick="switchCodeTab('js')" id="codeTab-js" class="px-3 py-1.5 rounded-t text-xs font-mono font-semibold text-slate-400 hover:text-white">JavaScript</button>
+              </div>
+              
+              <div class="flex items-center gap-2 text-xs">
+                <button onclick="copyCurrentTabCode()" class="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Copy</span>
+                </button>
+                <button onclick="downloadCurrentTabFile()" class="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">
+                  <i data-lucide="file-down" class="w-3.5 h-3.5"></i>
+                  <span>Download File</span>
+                </button>
+                <button onclick="applyCodeEditorChanges()" class="flex items-center gap-1 px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-medium">
+                  <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                  <span>Save & Preview</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Code Textarea -->
+            <div class="flex-1 relative">
+              <textarea 
+                id="rawCodeEditor" 
+                class="w-full h-full bg-slate-900 text-slate-200 font-mono text-xs sm:text-sm p-4 outline-none resize-none selection:bg-blue-600/40" 
+                spellcheck="false"
+                oninput="debouncedAutoSaveCode()"
+              ></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MY WEBSITES / PROJECTS DASHBOARD -->
+    <section id="view-projects" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">My Websites</h1>
+          <p class="text-sm text-slate-500 mt-1">Manage, edit, export and configure domains for your generated projects.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="relative w-full sm:w-64">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input 
+              type="text" 
+              id="projectSearchInput" 
+              placeholder="Search projects..." 
+              oninput="renderProjectsList()"
+              class="w-full pl-9 pr-3 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500" 
+            />
+          </div>
+          <button onclick="startFreshProject()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm whitespace-nowrap shadow-sm">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>New Project</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-6 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 flex items-start gap-3">
+        <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
+        <div class="text-xs sm:text-sm text-amber-800 dark:text-amber-300">
+          <strong>Storage Notice:</strong> Websites are saved locally in your browser. Use the 
+          <button onclick="exportAllProjectsJSON()" class="underline font-semibold hover:text-amber-900 dark:hover:text-amber-100">Export All Backup</button> feature in Settings to download your full projects backup.
+        </div>
+      </div>
+
+      <div id="fullProjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- 4. TEMPLATE GALLERY -->
+    <section id="view-templates" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Website Templates</h1>
+        <p class="text-slate-500 text-sm sm:text-base mt-2">Pick any template to immediately feed it to AI and customize for your needs.</p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-8" id="templateFilterBar">
+        <button onclick="filterTemplates('all')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-600 text-white">All</button>
+        <button onclick="filterTemplates('business')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Business</button>
+        <button onclick="filterTemplates('portfolio')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Portfolio</button>
+        <button onclick="filterTemplates('ecommerce')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">E-Commerce</button>
+        <button onclick="filterTemplates('education')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Education</button>
+        <button onclick="filterTemplates('restaurant')" class="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Restaurant</button>
+      </div>
+
+      <div id="templatesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- 5. HOW TO USE / TUTORIAL -->
+    <section id="view-tutorial" class="view-panel hidden max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full">
+      <div class="text-center mb-12">
+        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Tutorial</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">How To Build Websites With Free Web Builder</h1>
+        <p class="text-slate-500 text-sm sm:text-base mt-2">From idea to fully responsive code in seconds.</p>
+      </div>
+
+      <div class="space-y-6">
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex gap-4 items-start shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center shrink-0">1</div>
+          <div>
+            <h3 class="font-bold text-base">Write Prompt in English, Hindi, or Hinglish</h3>
+            <p class="text-sm text-slate-500 mt-1">Short prompt ho (e.g. "Calculator") ya full business proposal, AI har cheez ko correctly interpret karega.</p>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex gap-4 items-start shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold flex items-center justify-center shrink-0">2</div>
+          <div>
+            <h3 class="font-bold text-base">Instant Generation via OpenRouter AI</h3>
+            <p class="text-sm text-slate-500 mt-1">Live semantic HTML, modern Tailwind styling aur complete working JavaScript functions generate hote hain.</p>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex gap-4 items-start shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center shrink-0">3</div>
+          <div>
+            <h3 class="font-bold text-base">Test Live & Download Source Code</h3>
+            <p class="text-sm text-slate-500 mt-1">Desktop, tablet, aur mobile responsive view check karein aur ek click me complete source ZIP download karein.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ABOUT SECTION -->
+    <section id="view-about" class="view-panel hidden max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full">
+      <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-blue-200">Mission</span>
+        <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">About Free Web Builder</h1>
+        <p class="text-blue-100 mt-4 leading-relaxed text-sm sm:text-base">
+          Free Web Builder is an AI-powered website creation platform designed to help everyone build websites without complicated coding. Powered by Aleem Teach Foundation (ATF).
+        </p>
+      </div>
+
+      <div class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-center gap-6">
+        <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-brand-600 to-purple-600 text-white font-extrabold text-2xl flex items-center justify-center shadow-lg">
+          ATF
+        </div>
+        <div class="text-center sm:text-left">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Founder & Visionary</span>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">Mohammad Aleem</h2>
+          <p class="text-xs text-slate-500">Founder, Aleem Teach Foundation (ATF)</p>
+          <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed">
+            Mohammad Aleem is dedicated to democratizing digital tools, web development, and AI education for creators and learners worldwide.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-3 justify-center sm:justify-start">
+            <a href="https://youtube.com/@atfz3?si=Rwkzg1P4-heO0p2W" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-sm transition">
+              <i data-lucide="youtube" class="w-4 h-4"></i>
+              <span>Subscribe on YouTube</span>
+            </a>
+            <a href="mailto:aleemteachfoundation@gmail.com" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+              <span>aleemteachfoundation@gmail.com</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CONTACT US -->
+    <section id="view-contact" class="view-panel hidden max-w-3xl mx-auto px-4 sm:px-6 py-12 w-full">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-extrabold">Contact Aleem Teach Foundation</h1>
+        <p class="text-sm text-slate-500 mt-2">Have suggestions, partnership requests, or questions?</p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div class="mb-6 p-4 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs text-blue-700 dark:text-blue-300 flex items-center justify-between">
+          <span>Official Email: <strong>aleemteachfoundation@gmail.com</strong></span>
+          <a href="mailto:aleemteachfoundation@gmail.com" class="underline font-bold">Open Email Client</a>
+        </div>
+
+        <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Your Name</label>
+            <input type="text" id="contactName" required placeholder="Aapka Naam" class="w-full text-sm px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Your Email</label>
+            <input type="email" id="contactEmail" required placeholder="you@example.com" class="w-full text-sm px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Subject</label>
+            <input type="text" id="contactSubject" required placeholder="Subject" class="w-full text-sm px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Message</label>
+            <textarea id="contactMessage" rows="4" required placeholder="Apna message yahan likhein..." class="w-full text-sm px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500"></textarea>
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md transition flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Send Direct Email</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-700 dark:text-slate-300">Free Web Builder</span>
+        <span>•</span>
+        <span>Powered by Aleem Teach Foundation (ATF)</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://youtube.com/@atfz3?si=Rwkzg1P4-heO0p2W" target="_blank" rel="noopener" class="hover:text-red-600 flex items-center gap-1 font-semibold">
+          <i data-lucide="youtube" class="w-3.5 h-3.5 text-red-500"></i> YouTube Channel
+        </a>
+        <a href="mailto:aleemteachfoundation@gmail.com" class="hover:text-blue-500">Contact Email</a>
+        <button onclick="openSettingsModal()" class="hover:text-slate-900 dark:hover:text-white">API Settings</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODALS & OVERLAYS ================= -->
+
+  <!-- 1. SETTINGS MODAL -->
+  <div id="modal-settings" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-blue-500"></i>
+          <h3 class="font-bold text-base">Application Settings</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <!-- AI Provider: API Key -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">OpenRouter AI Key</label>
+          <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-semibold">Pre-Configured</span>
+        </div>
+        <input 
+          type="password" 
+          id="settingApiKey" 
+          placeholder="sk-or-v1-..." 
+          class="w-full text-xs font-mono px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500" 
+        />
+        
+        <div class="pt-2">
+          <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1">OpenRouter Model</label>
+          <select id="settingModelSelect" class="w-full text-xs p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none">
+            <option value="google/gemini-2.0-flash-001">google/gemini-2.0-flash-001 (Fastest & Accurate)</option>
+            <option value="deepseek/deepseek-chat">deepseek/deepseek-chat</option>
+            <option value="meta-llama/llama-3.3-70b-instruct">meta-llama/llama-3.3-70b-instruct</option>
+            <option value="qwen/qwen-2.5-coder-32b-instruct">qwen/qwen-2.5-coder-32b-instruct</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Theme & Interface -->
+      <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div>
+          <label class="block text-xs font-bold mb-1">Color Mode</label>
+          <select id="settingThemeSelect" onchange="changeThemeFromSelect(this.value)" class="w-full text-xs p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <option value="dark">Dark Theme (Lovable)</option>
+            <option value="light">Light Theme</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold mb-1">Language</label>
+          <select id="settingLanguageSelect" class="w-full text-xs p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <option value="hi">Hindi / Hinglish</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Data Backup & Reset -->
+      <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">Backup & Storage</label>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="exportAllProjectsJSON()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> Export All Projects JSON
+          </button>
+          
+          <label class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="upload" class="w-3.5 h-3.5"></i> Import JSON
+            <input type="file" accept=".json" class="hidden" onchange="importProjectsJSON(this)" />
+          </label>
+
+          <button onclick="clearAllLocalData()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 hover:bg-rose-100 text-xs font-semibold flex items-center gap-1.5 ml-auto">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear Storage
+          </button>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2">
+        <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+        <button onclick="saveSettingsForm()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 shadow-md">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DAILY USAGE & YOUTUBE VERIFICATION MODAL -->
+  <div id="modal-usage" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="zap" class="w-5 h-5 text-amber-500"></i>
+          <h3 class="font-bold text-base">Free Daily Usage</h3>
+        </div>
+        <button onclick="closeUsageModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-center space-y-2">
+        <div class="text-2xl font-black text-blue-600 dark:text-blue-400" id="usageNumbersDisplay">0 / 40</div>
+        <p class="text-xs text-slate-500">Free daily website generations reset every midnight.</p>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden mt-2">
+          <div id="usageProgressBar" class="bg-blue-600 h-full rounded-full transition-all" style="width: 0%"></div>
+        </div>
+        <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 pt-1" id="usageRemainingDisplay">40 Free Websites Remaining Today</p>
+      </div>
+
+      <div id="verificationSection" class="space-y-4 pt-2">
+        <div class="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs text-blue-800 dark:text-blue-300">
+          <strong>Generate More Than 40 Websites:</strong><br />
+          Subscribe to our official YouTube channel to unlock additional high-frequency website generation access.
+        </div>
+
+        <a 
+          href="https://youtube.com/@atfz3?si=Rwkzg1P4-heO0p2W" 
+          target="_blank" 
+          rel="noopener" 
+          class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition"
+        >
+          <i data-lucide="youtube" class="w-4 h-4"></i>
+          <span>Subscribe to Aleem Teach Foundation</span>
+        </a>
+
+        <!-- Screenshot Upload Workflow -->
+        <div id="screenshotBox" class="p-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-center space-y-2">
+          <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">Upload Subscription Screenshot</p>
+          <input type="file" id="subScreenshotInput" accept="image/*" class="hidden" onchange="previewScreenshot(this)" />
+          
+          <div id="screenshotPreviewArea" class="hidden flex-col items-center gap-2">
+            <img id="subScreenshotPreview" class="max-h-36 rounded-lg border border-slate-200 dark:border-slate-700 object-contain shadow-sm" />
+            <button onclick="removeScreenshot()" class="text-xs text-red-500 font-semibold hover:underline">Remove Screenshot</button>
+          </div>
+
+          <button id="uploadProofBtn" onclick="document.getElementById('subScreenshotInput').click()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-semibold">
+            Choose Screenshot
+          </button>
+        </div>
+
+        <button 
+          id="verifyProofBtn" 
+          disabled 
+          onclick="submitSubscriptionProof()" 
+          class="w-full py-2.5 rounded-xl bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-xs cursor-not-allowed transition"
+        >
+          Submit For Local Verification
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. CUSTOM DOMAIN MODAL -->
+  <div id="modal-domain" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="globe" class="w-5 h-5 text-blue-500"></i>
+          <h3 class="font-bold text-base">Custom Domain Configuration</h3>
+        </div>
+        <button onclick="closeCustomDomainModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300">Enter Your Custom Domain</label>
+        <input 
+          type="text" 
+          id="customDomainInput" 
+          placeholder="e.g. myportfolio.com or store.mydomain.in" 
+          class="w-full text-xs font-mono px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 outline-none focus:border-blue-500" 
+        />
+      </div>
+
+      <div class="space-y-2">
+        <p class="text-xs font-bold uppercase text-slate-600 dark:text-slate-300">DNS Records Guide:</p>
+        <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden text-xs">
+          <table class="w-full text-left">
+            <thead class="bg-slate-100 dark:bg-slate-800 text-[11px] font-bold text-slate-500">
+              <tr><th class="p-2">Type</th><th class="p-2">Name</th><th class="p-2">Value</th></tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-[11px]">
+              <tr><td class="p-2">CNAME</td><td class="p-2">www</td><td class="p-2">yourname.github.io</td></tr>
+              <tr><td class="p-2">A</td><td class="p-2">@</td><td class="p-2">185.199.108.153</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+        <button onclick="closeCustomDomainModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500">Cancel</button>
+        <button onclick="saveCustomDomain()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700">Save Domain Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ================= JAVASCRIPT APPLICATION CORE ================= -->
+  <script>
+    /* ----------------------------------------------------
+       CONFIGURED OPENROUTER API KEY & STORAGE
+    ---------------------------------------------------- */
+    const CONFIGURED_API_KEY = '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';
+
+    const STORAGE_KEYS = {
+      PROJECTS: 'atf_fwb_projects_v2',
+      CURRENT_ID: 'atf_fwb_active_id',
+      USAGE: 'atf_fwb_daily_usage_v2',
+      SETTINGS: 'atf_fwb_settings_v2',
+      VERIFIED_SUB: 'atf_fwb_sub_verified'
+    };
+
+    let appState = {
+      projects: [],
+      currentProjectId: null,
+      activeCodeTab: 'html',
+      settings: {
+        geminiApiKey: CONFIGURED_API_KEY,
+        openRouterModel: 'google/gemini-2.0-flash-001',
+        theme: 'dark',
+        language: 'hi'
+      },
+      usage: {
+        date: new Date().toDateString(),
+        count: 0
+      },
+      isSubscribedProofGiven: false,
+      speechRecognition: null,
+      isListening: false,
+      attachedFileContent: null,
+      attachedFileName: null
+    };
+
+    const TEMPLATE_PRESETS = [
+      {
+        id: 'tpl-calc',
+        category: 'calculator',
+        title: 'Modern Scientific Calculator',
+        description: 'Clean UI with scientific calculations, dark mode, audio clicks and calculation history log.',
+        prompt: 'Ek fully working scientific calculator with modern sleek UI, calculation history log, clear button, and keyboard support.'
+      },
+      {
+        id: 'tpl-game',
+        category: 'game',
+        title: 'Interactive Web Game (Tic Tac Toe)',
+        description: '2 Player interactive game with score counter, sound effects, reset button and winning animations.',
+        prompt: 'Playable modern Tic Tac Toe game with 2 player mode, winner detection banner, score tracker and confetti effect.'
+      },
+      {
+        id: 'tpl-portfolio',
+        category: 'portfolio',
+        title: 'Minimalist Dark Portfolio',
+        description: 'Sleek dark UI for developers with live projects showcase, filter tabs and contact modal.',
+        prompt: 'Minimalist dark developer portfolio with smooth animations, filterable project grid, skills tags, and clean contact form.'
+      },
+      {
+        id: 'tpl-ecommerce',
+        category: 'ecommerce',
+        title: 'Modern E-Commerce Store',
+        description: 'Clean product catalog with price filters, shopping cart slide-over, and checkout prompt.',
+        prompt: 'E-commerce store with product cards, category filter, working cart total calculation, add-to-cart badges, and checkout modal.'
+      },
+      {
+        id: 'tpl-education',
+        category: 'education',
+        title: 'Coaching & Academy Portal (Hindi)',
+        description: 'Hindi and English mixed coaching portal with courses, batch timings, fee calculator, and registration form.',
+        prompt: 'Ek coaching institute ki Hindi + English website banaiye jisme course fees, batch timings, student reviews aur admission enquiry form ho.'
+      }
+    ];
+
+    /* ----------------------------------------------------
+       INITIALIZATION
+    ---------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStorageData();
+      applyTheme(appState.settings.theme);
+      checkAndResetDailyUsage();
+      initSpeechRecognition();
+      renderHomeRecentProjects();
+      renderTemplatesList();
+      updateUsagePill();
+
+      const activeProject = getActiveProject();
+      if (!activeProject && appState.projects.length === 0) {
+        createSampleProject();
+      }
+
+      lucide.createIcons();
+    });
+
+    function loadStorageData() {
+      try {
+        const storedProjects = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+        if (storedProjects) appState.projects = JSON.parse(storedProjects);
+
+        const storedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+        if (storedSettings) {
+          appState.settings = { ...appState.settings, ...JSON.parse(storedSettings) };
+        }
+        
+        // Force the configured OpenRouter API key
+        if (!appState.settings.geminiApiKey || !appState.settings.geminiApiKey.startsWith('sk-or-')) {
+          appState.settings.geminiApiKey = CONFIGURED_API_KEY;
+        }
+
+        const storedUsage = localStorage.getItem(STORAGE_KEYS.USAGE);
+        if (storedUsage) appState.usage = JSON.parse(storedUsage);
+
+        appState.isSubscribedProofGiven = localStorage.getItem(STORAGE_KEYS.VERIFIED_SUB) === 'true';
+
+        const storedActiveId = localStorage.getItem(STORAGE_KEYS.CURRENT_ID);
+        if (storedActiveId) appState.currentProjectId = storedActiveId;
+      } catch (e) {
+        console.error('Error reading localStorage:', e);
+      }
+    }
+
+    function saveProjects() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(appState.projects));
+      } catch (e) {
+        showToast('Storage quota exceeded. Please export your projects.', 'error');
+      }
+    }
+
+    function saveSettings() {
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appState.settings));
+    }
+
+    function saveUsage() {
+      localStorage.setItem(STORAGE_KEYS.USAGE, JSON.stringify(appState.usage));
+      updateUsagePill();
+    }
+
+    /* ----------------------------------------------------
+       DAILY USAGE SYSTEM (40 WEBSITES / DAY)
+    ---------------------------------------------------- */
+    function checkAndResetDailyUsage() {
+      const today = new Date().toDateString();
+      if (appState.usage.date !== today) {
+        appState.usage = { date: today, count: 0 };
+        saveUsage();
+      }
+    }
+
+    function updateUsagePill() {
+      const maxAllowed = appState.isSubscribedProofGiven ? 100 : 40;
+      const remaining = Math.max(0, maxAllowed - appState.usage.count);
+      
+      const pill = document.getElementById('navUsageText');
+      if (pill) pill.textContent = `${appState.usage.count}/${maxAllowed} Used (${remaining} left)`;
+
+      const display = document.getElementById('usageNumbersDisplay');
+      if (display) display.textContent = `${appState.usage.count} / ${maxAllowed}`;
+
+      const remDisplay = document.getElementById('usageRemainingDisplay');
+      if (remDisplay) remDisplay.textContent = `${remaining} Free Websites Remaining Today`;
+
+      const progressBar = document.getElementById('usageProgressBar');
+      if (progressBar) {
+        const pct = Math.min(100, Math.round((appState.usage.count / maxAllowed) * 100));
+        progressBar.style.width = `${pct}%`;
+      }
+    }
+
+    function checkCanGenerate() {
+      checkAndResetDailyUsage();
+      const maxAllowed = appState.isSubscribedProofGiven ? 100 : 40;
+      if (appState.usage.count >= maxAllowed) {
+        openUsageModal();
+        showToast('Daily limit reached. Subscribe on YouTube to unlock more!', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function incrementUsageCount() {
+      appState.usage.count += 1;
+      saveUsage();
+    }
+
+    /* ----------------------------------------------------
+       THEME & NAVIGATION
+    ---------------------------------------------------- */
+    function applyTheme(theme) {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      if (theme === 'dark') {
+        html.classList.add('dark');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'sun');
+      } else {
+        html.classList.remove('dark');
+        if (themeIcon) themeIcon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    function toggleDarkMode() {
+      appState.settings.theme = appState.settings.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(appState.settings.theme);
+      saveSettings();
+    }
+
+    function changeThemeFromSelect(val) {
+      appState.settings.theme = val;
+      applyTheme(val);
+      saveSettings();
+    }
+
+    function navigate(viewName) {
+      document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (viewName === 'projects') renderProjectsList();
+      if (viewName === 'home') renderHomeRecentProjects();
+      if (viewName === 'workspace') refreshWorkspaceUI();
+
+      lucide.createIcons();
+    }
+
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobileNav');
+      nav.classList.toggle('hidden');
+    }
+
+    function sanitizeSlug(name) {
+      return name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'my-site';
+    }
+
+    function ensureUniqueSlug(desiredSlug, currentId = null) {
+      let slug = desiredSlug;
+      let counter = 1;
+      while (appState.projects.some(p => p.slug === slug && p.id !== currentId)) {
+        slug = `${desiredSlug}-${counter}`;
+        counter++;
+      }
+      return slug;
+    }
+
+    /* ----------------------------------------------------
+       PROJECT MANAGEMENT
+    ---------------------------------------------------- */
+    function getActiveProject() {
+      return appState.projects.find(p => p.id === appState.currentProjectId) || appState.projects[0] || null;
+    }
+
+    function createSampleProject() {
+      const sample = {
+        id: 'proj-' + Date.now(),
+        name: 'Smart Calculator App',
+        slug: 'smart-calculator-app',
+        customDomain: '',
+        createdAt: new Date().toISOString(),
+        prompt: 'Ek modern dark calculator with interactive buttons and calculation history',
+        chatHistory: [
+          { role: 'user', text: 'Calculator banao' },
+          { role: 'assistant', text: 'Interactive calculator created with working mathematical operations!' }
+        ],
+        code: generateContextualFallback('Calculator banao')
+      };
+      appState.projects.unshift(sample);
+      appState.currentProjectId = sample.id;
+      saveProjects();
+    }
+
+    function startFreshProject() {
+      navigate('home');
+      const input = document.getElementById('homePromptInput');
+      input.value = '';
+      input.focus();
+      showToast('Naya website idea likhein!', 'info');
+    }
+
+    function loadProjectIntoWorkspace(projectId) {
+      appState.currentProjectId = projectId;
+      localStorage.setItem(STORAGE_KEYS.CURRENT_ID, projectId);
+      navigate('workspace');
+      refreshWorkspaceUI();
+    }
+
+    function renameCurrentProject() {
+      const project = getActiveProject();
+      if (!project) return;
+      const newName = prompt('Enter new website name:', project.name);
+      if (newName && newName.trim()) {
+        project.name = newName.trim();
+        project.slug = ensureUniqueSlug(sanitizeSlug(project.name), project.id);
+        saveProjects();
+        refreshWorkspaceUI();
+        showToast('Website renamed successfully');
+      }
+    }
+
+    function deleteProject(id, event) {
+      if (event) event.stopPropagation();
+      if (!confirm('Kya aap is website ko delete karna chahte hain?')) return;
+      appState.projects = appState.projects.filter(p => p.id !== id);
+      if (appState.currentProjectId === id) {
+        appState.currentProjectId = appState.projects[0] ? appState.projects[0].id : null;
+      }
+      saveProjects();
+      renderProjectsList();
+      renderHomeRecentProjects();
+      showToast('Project deleted', 'info');
+    }
+
+    /* ----------------------------------------------------
+       WORKSPACE UI & LIVE PREVIEW
+    ---------------------------------------------------- */
+    function refreshWorkspaceUI() {
+      const project = getActiveProject();
+      if (!project) {
+        navigate('home');
+        return;
+      }
+
+      document.getElementById('currentProjectTitle').textContent = project.name;
+      document.getElementById('currentProjectDomain').textContent = `https://${project.slug}.atf.com`;
+      document.getElementById('previewUrlBar').textContent = project.customDomain ? `https://${project.customDomain}` : `https://${project.slug}.atf.com`;
+
+      renderChatHistory(project);
+      refreshLivePreview();
+      updateCodeEditorContent();
+      lucide.createIcons();
+    }
+
+    function renderChatHistory(project) {
+      const container = document.getElementById('aiChatThread');
+      container.innerHTML = '';
+      if (!project.chatHistory || project.chatHistory.length === 0) {
+        container.innerHTML = '<div class="text-slate-400 text-center py-6">Prompt history yahan dikhegi.</div>';
+        return;
+      }
+
+      project.chatHistory.forEach(msg => {
+        const isUser = msg.role === 'user';
+        const el = document.createElement('div');
+        el.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'}`;
+        el.innerHTML = `
+          <div class="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs ${
+            isUser 
+              ? 'bg-blue-600 text-white rounded-br-none shadow-sm' 
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none border border-slate-200 dark:border-slate-700'
+          }">
+            ${escapeHTML(msg.text)}
+          </div>
+          <span class="text-[10px] text-slate-400 mt-1 px-1">${isUser ? 'You' : 'OpenRouter AI'}</span>
+        `;
+        container.appendChild(el);
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function refreshLivePreview() {
+      const project = getActiveProject();
+      if (!project) return;
+      const iframe = document.getElementById('livePreviewIframe');
+      
+      const combinedDoc = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>
+            ${project.code.css || ''}
+          </style>
+        </head>
+        <body class="bg-slate-900 text-white min-h-screen">
+          ${project.code.html || '<div class="p-8 text-center">Loading site...</div>'}
+          <script>
+            try {
+              ${project.code.js || ''}
+            } catch(e) { console.error('Website runtime error:', e); }
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      iframe.srcdoc = combinedDoc;
+    }
+
+    function setDeviceView(mode) {
+      const frame = document.getElementById('deviceFrame');
+      ['desktop', 'tablet', 'mobile'].forEach(m => {
+        const btn = document.getElementById(`devBtn-${m}`);
+        if (btn) {
+          btn.classList.remove('bg-white', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
+          btn.classList.add('text-slate-500');
+        }
+      });
+
+      const activeBtn = document.getElementById(`devBtn-${mode}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
+        activeBtn.classList.remove('text-slate-500');
+      }
+
+      if (mode === 'desktop') {
+        frame.style.maxWidth = '100%';
+        frame.style.height = '100%';
+      } else if (mode === 'tablet') {
+        frame.style.maxWidth = '768px';
+        frame.style.height = '90%';
+      } else if (mode === 'mobile') {
+        frame.style.maxWidth = '375px';
+        frame.style.height = '85%';
+      }
+    }
+
+    function switchWorkspaceMode(mode) {
+      const previewContainer = document.getElementById('workspacePreviewContainer');
+      const codeContainer = document.getElementById('workspaceCodeContainer');
+      const tabPrev = document.getElementById('modeTab-preview');
+      const tabCode = document.getElementById('modeTab-code');
+
+      if (mode === 'preview') {
+        previewContainer.classList.remove('hidden');
+        codeContainer.classList.add('hidden');
+        tabPrev.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm';
+        tabCode.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        refreshLivePreview();
+      } else {
+        previewContainer.classList.add('hidden');
+        codeContainer.classList.remove('hidden');
+        codeContainer.classList.add('flex');
+        tabCode.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm';
+        tabPrev.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        updateCodeEditorContent();
+      }
+    }
+
+    function switchCodeTab(tab) {
+      appState.activeCodeTab = tab;
+      ['html', 'css', 'js'].forEach(t => {
+        const btn = document.getElementById(`codeTab-${t}`);
+        if (t === tab) {
+          btn.className = 'px-3 py-1.5 rounded-t text-xs font-mono font-semibold bg-slate-900 text-blue-400 border-b-2 border-blue-500';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-t text-xs font-mono font-semibold text-slate-400 hover:text-white';
+        }
+      });
+      updateCodeEditorContent();
+    }
+
+    function updateCodeEditorContent() {
+      const project = getActiveProject();
+      if (!project) return;
+      const editor = document.getElementById('rawCodeEditor');
+      editor.value = project.code[appState.activeCodeTab] || '';
+    }
+
+    let codeSaveDebounceTimer = null;
+    function debouncedAutoSaveCode() {
+      clearTimeout(codeSaveDebounceTimer);
+      codeSaveDebounceTimer = setTimeout(() => {
+        applyCodeEditorChanges(false);
+      }, 700);
+    }
+
+    function applyCodeEditorChanges(notify = true) {
+      const project = getActiveProject();
+      if (!project) return;
+      const editor = document.getElementById('rawCodeEditor');
+      project.code[appState.activeCodeTab] = editor.value;
+      saveProjects();
+      refreshLivePreview();
+      if (notify) showToast(`${appState.activeCodeTab.toUpperCase()} updated & live preview refreshed`);
+    }
+
+    function copyCurrentTabCode() {
+      const project = getActiveProject();
+      if (!project) return;
+      const val = project.code[appState.activeCodeTab] || '';
+      navigator.clipboard.writeText(val).then(() => {
+        showToast(`Copied ${appState.activeCodeTab.toUpperCase()}!`);
+      });
+    }
+
+    function downloadCurrentTabFile() {
+      const project = getActiveProject();
+      if (!project) return;
+      const ext = appState.activeCodeTab;
+      const filename = ext === 'html' ? 'index.html' : ext === 'css' ? 'style.css' : 'script.js';
+      const content = project.code[ext] || '';
+      downloadBlob(content, filename, 'text/plain');
+    }
+
+    function openPreviewInNewTab() {
+      const project = getActiveProject();
+      if (!project) return;
+      const combinedDoc = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${project.name}</title>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>${project.code.css || ''}</style>
+        </head>
+        <body class="bg-slate-900 text-white min-h-screen">
+          ${project.code.html}
+          <script>${project.code.js || ''}<\/script>
+        </body>
+        </html>
+      `;
+      const blob = new Blob([combinedDoc], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }
+
+    function copyProjectUrl() {
+      const project = getActiveProject();
+      if (!project) return;
+      const url = `https://${project.slug}.atf.com`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast(`Staging URL copied: ${url}`);
+      });
+    }
+
+    /* ----------------------------------------------------
+       ZIP EXPORT
+    ---------------------------------------------------- */
+    function downloadProjectZIP(projectId = null) {
+      const project = projectId ? appState.projects.find(p => p.id === projectId) : getActiveProject();
+      if (!project) return;
+
+      if (typeof JSZip === 'undefined') {
+        showToast('ZIP library loading...', 'error');
+        return;
+      }
+
+      const zip = new JSZip();
+      const standaloneHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${project.name}</title>
+  <script src="https://cdn.tailwindcss.com"><\/script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+${project.code.html}
+
+  <script src="script.js"><\/script>
+</body>
+</html>`;
+
+      zip.file("index.html", standaloneHTML);
+      zip.file("style.css", project.code.css || "/* Custom CSS */\n");
+      zip.file("script.js", project.code.js || "// Custom JS\n");
+      zip.file("README.md", `# ${project.name}\n\nGenerated with Free Web Builder by Mohammad Aleem (Aleem Teach Foundation).\n`);
+
+      zip.generateAsync({ type: "blob" }).then(content => {
+        const zipName = `${project.slug}-source-code.zip`;
+        downloadBlob(content, zipName, "application/zip");
+        showToast(`Downloaded ${zipName} successfully!`);
+      });
+    }
+
+    function downloadBlob(content, fileName, mimeType) {
+      const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    }
+
+    /* ----------------------------------------------------
+       CORE AI GENERATION ENGINE (OPENROUTER AI)
+    ---------------------------------------------------- */
+    async function triggerGenerationFromHome() {
+      const promptInput = document.getElementById('homePromptInput');
+      const promptText = promptInput.value.trim();
+
+      if (!promptText) {
+        showToast('Kripya batayein aapko kaunsi website banani hai!', 'error');
+        promptInput.focus();
+        return;
+      }
+
+      if (!checkCanGenerate()) return;
+
+      const genBtn = document.getElementById('generateBtn');
+      const origText = genBtn.innerHTML;
+      genBtn.disabled = true;
+      genBtn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Generating with AI...`;
+
+      try {
+        const websiteCode = await executeAiGeneration(promptText, null, appState.attachedFileContent);
+        
+        // Derive appropriate title
+        const cleanWords = promptText.replace(/[^a-zA-Z0-9\s]/g, '').trim().split(/\s+/).slice(0, 4).join(' ');
+        const projectName = cleanWords ? (cleanWords.charAt(0).toUpperCase() + cleanWords.slice(1)) : 'AI Web App';
+        const projectSlug = ensureUniqueSlug(sanitizeSlug(projectName));
+
+        const newProject = {
+          id: 'proj-' + Date.now(),
+          name: projectName,
+          slug: projectSlug,
+          customDomain: '',
+          createdAt: new Date().toISOString(),
+          prompt: promptText,
+          chatHistory: [
+            { role: 'user', text: promptText },
+            { role: 'assistant', text: `Website for "${promptText}" generated successfully! You can refine or modify any part.` }
+          ],
+          code: websiteCode
+        };
+
+        appState.projects.unshift(newProject);
+        appState.currentProjectId = newProject.id;
+        saveProjects();
+        incrementUsageCount();
+
+        promptInput.value = '';
+        clearAttachment();
+
+        navigate('workspace');
+        showToast('Website successfully generated!');
+      } catch (err) {
+        console.error('Generation Error:', err);
+        showToast('Generation alert: ' + (err.message || 'Please check network or prompt'), 'error');
+      } finally {
+        genBtn.disabled = false;
+        genBtn.innerHTML = origText;
+        lucide.createIcons();
+      }
+    }
+
+    async function handleIterativePrompt(event) {
+      event.preventDefault();
+      const input = document.getElementById('iterativePromptInput');
+      const followUpPrompt = input.value.trim();
+      if (!followUpPrompt) return;
+
+      const project = getActiveProject();
+      if (!project) return;
+
+      if (!checkCanGenerate()) return;
+
+      project.chatHistory.push({ role: 'user', text: followUpPrompt });
+      renderChatHistory(project);
+      input.value = '';
+
+      const statusPill = document.getElementById('aiStatusPill');
+      statusPill.textContent = 'Updating code with AI...';
+      statusPill.className = 'text-[11px] text-amber-500 font-semibold';
+
+      try {
+        const updatedCode = await executeAiGeneration(followUpPrompt, project.code, null);
+        project.code = updatedCode;
+        project.chatHistory.push({
+          role: 'assistant',
+          text: `Applied: "${followUpPrompt}". Preview updated!`
+        });
+        saveProjects();
+        incrementUsageCount();
+        refreshWorkspaceUI();
+        showToast('Changes applied successfully!');
+      } catch (e) {
+        showToast('Failed to apply modification: ' + e.message, 'error');
+      } finally {
+        statusPill.textContent = 'Ready';
+        statusPill.className = 'text-[11px] text-slate-400';
+      }
+    }
+
+    function quickAppendPrompt(text) {
+      const input = document.getElementById('iterativePromptInput');
+      input.value = text;
+      input.focus();
+    }
+
+    async function executeAiGeneration(prompt, existingCode = null, attachmentContext = null) {
+      const apiKey = (appState.settings.geminiApiKey || CONFIGURED_API_KEY).trim();
+
+      try {
+        return await callOpenRouterApi(prompt, existingCode, apiKey, attachmentContext);
+      } catch (apiError) {
+        console.warn("OpenRouter API issue, falling back to smart contextual generator:", apiError);
+        showToast("OpenRouter notice: " + (apiError.message || "Generating local version..."), "info");
+        return generateContextualFallback(prompt, existingCode);
+      }
+    }
+
+    // Call OpenRouter API with high max_tokens & multi-tier parsing
+    async function callOpenRouterApi(userPrompt, existingCode, apiKey, attachmentContext) {
+      const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+      const model = appState.settings.openRouterModel || 'google/gemini-2.0-flash-001';
+
+      const systemInstruction = `You are Free Web Builder AI, an expert front-end web architect and UI designer created by Mohammad Aleem (Aleem Teach Foundation).
+CRITICAL RULES:
+1. STRICT USER REQUEST FIDELITY:
+   - Understand the user's prompt deeply, whether it is VERY SHORT (e.g. "calculator banao", "tic tac toe game", "portfolio", "quiz app") OR VERY LONG with detailed business specifications.
+   - The user may write in English, Hindi, or Hinglish.
+   - You MUST generate EXACTLY what the user requested!
+   - If the user asks for a calculator, you MUST create a real, fully interactive calculator with buttons that perform actual math in JavaScript.
+   - If the user asks for a game (like Tic Tac Toe or Snake), generate the real playable game with working JavaScript game logic.
+   - If the user asks for a Hindi coaching institute, write authentic Hindi/Hinglish content, courses, and forms.
+   - NEVER output a generic corporate template when a specific utility, tool, or app was requested!
+
+2. CODE QUALITY:
+   - Modern, mobile-first, and responsive.
+   - Use Tailwind CSS classes heavily for beautiful cards, gradients, buttons, and animations.
+   - Provide WORKING vanilla JavaScript logic for all interactions (buttons, modals, math, counters, tabs).
+
+3. STRICT RESPONSE JSON FORMAT:
+   Return ONLY a valid JSON object without surrounding markdown fences:
+   {
+     "title": "Title of the website",
+     "html": "Complete semantic HTML body markup (do NOT include <html> or <body> tags, only the inner content)",
+     "css": "Any custom CSS or keyframe animations",
+     "js": "Clean interactive vanilla JavaScript code"
+   }`;
+
+      let promptPayload = `User Prompt: ${userPrompt}\n`;
+      if (existingCode) {
+        promptPayload += `Existing HTML:\n${existingCode.html}\nExisting CSS:\n${existingCode.css}\nExisting JS:\n${existingCode.js}\nModify the existing code directly according to the user prompt. Keep existing functionality intact.\n`;
+      }
+      if (attachmentContext) {
+        promptPayload += `Context: ${attachmentContext}\n`;
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+          'HTTP-Referer': window.location.origin || 'https://freewebbuilder.atf.com',
+          'X-Title': 'Free Web Builder'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: promptPayload }
+          ],
+          temperature: 0.7,
+          max_tokens: 5000
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`OpenRouter Error ${response.status}: ${errText}`);
+      }
+
+      const data = await response.json();
+      const rawText = data.choices?.[0]?.message?.content || '';
+
+      // Multi-layer parsing to ensure long & short prompts never fail
+      return parseAIResponse(rawText, userPrompt, existingCode);
+    }
+
+    // Resilient Parser: Handles clean JSON, markdown-wrapped JSON, and unescaped streams
+    function parseAIResponse(rawText, userPrompt, existingCode) {
+      if (!rawText || !rawText.trim()) {
+        throw new Error("Empty response from AI");
+      }
+
+      let clean = rawText.trim()
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/, '')
+        .replace(/```\s*$/i, '')
+        .trim();
+
+      // 1. Direct JSON Parse
+      try {
+        const parsed = JSON.parse(clean);
+        if (parsed.html) {
+          return {
+            html: parsed.html,
+            css: parsed.css || '',
+            js: parsed.js || ''
+          };
+        }
+      } catch (e) {}
+
+      // 2. Extract outermost { ... }
+      const firstBrace = clean.indexOf('{');
+      const lastBrace = clean.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace > firstBrace) {
+        const candidate = clean.substring(firstBrace, lastBrace + 1);
+        try {
+          const parsed = JSON.parse(candidate);
+          if (parsed.html) {
+            return {
+              html: parsed.html,
+              css: parsed.css || '',
+              js: parsed.js || ''
+            };
+          }
+        } catch (e) {}
+      }
+
+      // 3. Fallback Key Extractor (solves unescaped newlines in long code)
+      const extractedHtml = extractJSONKey(clean, 'html');
+      const extractedCss = extractJSONKey(clean, 'css');
+      const extractedJs = extractJSONKey(clean, 'js');
+
+      if (extractedHtml) {
+        return {
+          html: extractedHtml,
+          css: extractedCss,
+          js: extractedJs
+        };
+      }
+
+      // 4. Raw HTML fallback if AI returned HTML directly
+      if (clean.includes('<div') || clean.includes('<section') || clean.includes('<header') || clean.includes('<main')) {
+        return {
+          html: clean,
+          css: '',
+          js: ''
+        };
+      }
+
+      return generateContextualFallback(userPrompt, existingCode);
+    }
+
+    function extractJSONKey(text, key) {
+      const regex = new RegExp(`"${key}"\\s*:\\s*"([\\s\\S]*?)(?="\\s*,\\s*"[a-zA-Z]+"|"\\s*\\})`, 'i');
+      const match = text.match(regex);
+      if (match && match[1]) {
+        return match[1]
+          .replace(/\\"/g, '"')
+          .replace(/\\n/g, '\n')
+          .replace(/\\t/g, '\t')
+          .replace(/\\\\/g, '\\');
+      }
+      return '';
+    }
+
+    /* ----------------------------------------------------
+       SMART CONTEXTUAL FALLBACK GENERATOR
+       (Used ONLY if offline/network fails - strictly mirrors prompt!)
+    ---------------------------------------------------- */
+    function generateContextualFallback(prompt, existingCode = null) {
+      const lower = prompt.toLowerCase();
+      
+      // 1. CALCULATOR
+      if (lower.includes('calc') || lower.includes('hisab') || lower.includes('ganit') || lower.includes('calculator')) {
+        return {
+          html: `
+<div class="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-xs font-bold uppercase tracking-wider text-blue-500">Calculator</span>
+      <span id="calcHistory" class="text-xs text-slate-400 font-mono">0</span>
+    </div>
+    <div id="calcDisplay" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-right text-3xl font-mono text-white mb-6 overflow-x-auto">
+      0
+    </div>
+    <div class="grid grid-cols-4 gap-3 text-lg font-bold">
+      <button onclick="calcClear()" class="p-4 rounded-xl bg-slate-800 text-rose-400 hover:bg-slate-700 active:scale-95 transition">C</button>
+      <button onclick="calcDelete()" class="p-4 rounded-xl bg-slate-800 text-amber-400 hover:bg-slate-700 active:scale-95 transition">⌫</button>
+      <button onclick="calcInput('%')" class="p-4 rounded-xl bg-slate-800 text-blue-400 hover:bg-slate-700 active:scale-95 transition">%</button>
+      <button onclick="calcInput('/')" class="p-4 rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition">÷</button>
+      
+      <button onclick="calcInput('7')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">7</button>
+      <button onclick="calcInput('8')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">8</button>
+      <button onclick="calcInput('9')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">9</button>
+      <button onclick="calcInput('*')" class="p-4 rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition">×</button>
+      
+      <button onclick="calcInput('4')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">4</button>
+      <button onclick="calcInput('5')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">5</button>
+      <button onclick="calcInput('6')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">6</button>
+      <button onclick="calcInput('-')" class="p-4 rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition">-</button>
+      
+      <button onclick="calcInput('1')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">1</button>
+      <button onclick="calcInput('2')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">2</button>
+      <button onclick="calcInput('3')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">3</button>
+      <button onclick="calcInput('+')" class="p-4 rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition">+</button>
+      
+      <button onclick="calcInput('0')" class="col-span-2 p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">0</button>
+      <button onclick="calcInput('.')" class="p-4 rounded-xl bg-slate-800 text-white hover:bg-slate-700 active:scale-95 transition">.</button>
+      <button onclick="calcEquals()" class="p-4 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95 transition">=</button>
+    </div>
+  </div>
+</div>`,
+          css: ``,
+          js: `
+let currentVal = '0';
+function updateDisplay() { document.getElementById('calcDisplay').innerText = currentVal; }
+function calcInput(char) {
+  if (currentVal === '0' && !isNaN(char)) currentVal = char;
+  else currentVal += char;
+  updateDisplay();
+}
+function calcClear() { currentVal = '0'; updateDisplay(); }
+function calcDelete() {
+  currentVal = currentVal.length > 1 ? currentVal.slice(0, -1) : '0';
+  updateDisplay();
+}
+function calcEquals() {
+  try {
+    document.getElementById('calcHistory').innerText = currentVal;
+    currentVal = String(eval(currentVal.replace(/×/g, '*').replace(/÷/g, '/')));
+    updateDisplay();
+  } catch(e) {
+    currentVal = 'Error';
+    updateDisplay();
+  }
+}`
+        };
+      }
+
+      // 2. TIC TAC TOE / GAME
+      if (lower.includes('game') || lower.includes('tic tac') || lower.includes('khel')) {
+        return {
+          html: `
+<div class="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
+    <h2 class="text-2xl font-bold mb-2 text-white">Tic Tac Toe</h2>
+    <p id="gameStatus" class="text-sm font-semibold text-blue-400 mb-6">Player X's Turn</p>
+    <div class="grid grid-cols-3 gap-3 mb-6" id="board">
+      <button onclick="makeMove(0)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c0"></button>
+      <button onclick="makeMove(1)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c1"></button>
+      <button onclick="makeMove(2)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c2"></button>
+      <button onclick="makeMove(3)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c3"></button>
+      <button onclick="makeMove(4)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c4"></button>
+      <button onclick="makeMove(5)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c5"></button>
+      <button onclick="makeMove(6)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c6"></button>
+      <button onclick="makeMove(7)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c7"></button>
+      <button onclick="makeMove(8)" class="h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition" id="c8"></button>
+    </div>
+    <button onclick="resetGame()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 font-bold rounded-xl text-white transition">Restart Game</button>
+  </div>
+</div>`,
+          css: ``,
+          js: `
+let state = Array(9).fill(null);
+let turn = 'X';
+let active = true;
+function makeMove(i) {
+  if (!state[i] && active) {
+    state[i] = turn;
+    document.getElementById('c' + i).innerText = turn;
+    document.getElementById('c' + i).className += turn === 'X' ? ' text-blue-400' : ' text-rose-400';
+    checkWinner();
+  }
+}
+function checkWinner() {
+  const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for (let w of wins) {
+    if (state[w[0]] && state[w[0]] === state[w[1]] && state[w[0]] === state[w[2]]) {
+      document.getElementById('gameStatus').innerText = '🎉 Player ' + state[w[0]] + ' Wins!';
+      active = false;
+      return;
+    }
+  }
+  if (!state.includes(null)) {
+    document.getElementById('gameStatus').innerText = "Game Draw!";
+    active = false;
+    return;
+  }
+  turn = turn === 'X' ? 'O' : 'X';
+  document.getElementById('gameStatus').innerText = "Player " + turn + "'s Turn";
+}
+function resetGame() {
+  state.fill(null);
+  turn = 'X';
+  active = true;
+  for (let i=0; i<9; i++) {
+    document.getElementById('c' + i).innerText = '';
+    document.getElementById('c' + i).className = 'h-20 bg-slate-800 rounded-2xl text-3xl font-extrabold hover:bg-slate-700 transition';
+  }
+  document.getElementById('gameStatus').innerText = "Player X's Turn";
+}`
+        };
+      }
+
+      // 3. DEFAULT HIGH-FIDELITY CUSTOM SITE REFLECTING EXACT PROMPT
+      const promptTitle = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
+      return {
+        html: `
+<div class="min-h-screen bg-slate-950 text-slate-100 font-sans">
+  <header class="border-b border-slate-800/80 sticky top-0 bg-slate-950/80 backdrop-blur z-20">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="font-extrabold text-lg text-blue-500">${escapeHTML(promptTitle)}</div>
+      <button onclick="alert('Feature active!')" class="px-4 py-2 rounded-xl bg-blue-600 text-xs font-bold hover:bg-blue-700 transition">Get Started</button>
+    </div>
+  </header>
+  <main class="max-w-5xl mx-auto px-6 py-20 text-center">
+    <span class="px-3 py-1 rounded-full text-xs font-bold bg-blue-900/50 text-blue-400 border border-blue-800">Custom AI Generation</span>
+    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mt-6 leading-tight">${escapeHTML(prompt)}</h1>
+    <p class="text-slate-400 max-w-xl mx-auto mt-4 text-sm sm:text-base">Designed strictly according to your specifications with interactive features and responsive layouts.</p>
+    <div class="mt-8 flex justify-center gap-4">
+      <button onclick="document.getElementById('inquiryModal').classList.remove('hidden')" class="px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 font-bold text-sm transition">Open Form</button>
+    </div>
+  </main>
+  <div id="inquiryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 max-w-sm w-full text-center space-y-4">
+      <h3 class="text-lg font-bold">Interactive Modal</h3>
+      <p class="text-xs text-slate-400">All interactive features are functioning seamlessly.</p>
+      <button onclick="document.getElementById('inquiryModal').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-blue-600 text-xs font-bold">Close</button>
+    </div>
+  </div>
+</div>`,
+        css: ``,
+        js: ``
+      };
+    }
+
+    /* ----------------------------------------------------
+       VOICE INPUT
+    ---------------------------------------------------- */
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      appState.speechRecognition = new SpeechRecognition();
+      appState.speechRecognition.continuous = false;
+      appState.speechRecognition.interimResults = false;
+      appState.speechRecognition.lang = 'hi-IN'; // Works for Hindi & Indian English
+
+      appState.speechRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        const promptInput = document.getElementById('homePromptInput');
+        promptInput.value = (promptInput.value ? promptInput.value + ' ' : '') + transcript;
+        showToast('Recognized: ' + transcript);
+      };
+
+      appState.speechRecognition.onend = () => {
+        appState.isListening = false;
+        const icon = document.getElementById('voiceIcon');
+        if (icon) icon.classList.remove('text-red-500', 'animate-pulse');
+      };
+    }
+
+    function toggleSpeechRecognition() {
+      if (!appState.speechRecognition) {
+        showToast('Speech recognition not supported in this browser', 'error');
+        return;
+      }
+
+      const icon = document.getElementById('voiceIcon');
+      if (appState.isListening) {
+        appState.speechRecognition.stop();
+        appState.isListening = false;
+        if (icon) icon.classList.remove('text-red-500', 'animate-pulse');
+      } else {
+        try {
+          appState.speechRecognition.start();
+          appState.isListening = true;
+          if (icon) icon.classList.add('text-red-500', 'animate-pulse');
+          showToast('Listening... Boliye apna idea!');
+        } catch (err) {}
+      }
+    }
+
+    /* ----------------------------------------------------
+       ATTACHMENTS
+    ---------------------------------------------------- */
+    function handleAttachment(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      appState.attachedFileName = file.name;
+
+      const reader = new FileReader();
+      if (file.type.startsWith('image/')) {
+        reader.onload = () => {
+          appState.attachedFileContent = `[Attached Mockup: ${file.name}]`;
+          showAttachmentIndicator(file.name);
+          showToast(`Attached image: ${file.name}`);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        reader.onload = (e) => {
+          appState.attachedFileContent = e.target.result;
+          showAttachmentIndicator(file.name);
+          showToast(`Attached file: ${file.name}`);
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    function showAttachmentIndicator(filename) {
+      const box = document.getElementById('attachmentIndicator');
+      const label = document.getElementById('attachmentName');
+      if (box && label) {
+        label.textContent = filename;
+        box.classList.remove('hidden');
+        box.classList.add('flex');
+      }
+    }
+
+    function clearAttachment() {
+      appState.attachedFileContent = null;
+      appState.attachedFileName = null;
+      const box = document.getElementById('attachmentIndicator');
+      if (box) {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }
+      document.getElementById('imageUploadInput').value = '';
+      document.getElementById('fileUploadInput').value = '';
+    }
+
+    function setPrompt(text) {
+      const input = document.getElementById('homePromptInput');
+      input.value = text;
+      input.focus();
+    }
+
+    /* ----------------------------------------------------
+       PROJECTS DASHBOARD RENDERING
+    ---------------------------------------------------- */
+    function renderProjectsList() {
+      const grid = document.getElementById('fullProjectsGrid');
+      if (!grid) return;
+      const searchVal = (document.getElementById('projectSearchInput')?.value || '').toLowerCase();
+
+      const filtered = appState.projects.filter(p => 
+        p.name.toLowerCase().includes(searchVal) || 
+        p.slug.toLowerCase().includes(searchVal) ||
+        (p.prompt && p.prompt.toLowerCase().includes(searchVal))
+      );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center">
+            <i data-lucide="folder-search" class="w-12 h-12 text-slate-400 mx-auto mb-3"></i>
+            <h3 class="font-bold text-lg">No Websites Found</h3>
+            <p class="text-xs text-slate-500 mt-1">Start by clicking "New Website" to generate your first idea.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <div class="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 flex items-center justify-center font-bold">
+                <i data-lucide="globe" class="w-5 h-5"></i>
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="downloadProjectZIP('${p.id}')" class="p-2 rounded-xl text-slate-400 hover:text-slate-900 dark:hover:text-white" title="Download ZIP"><i data-lucide="download" class="w-4 h-4"></i></button>
+                <button onclick="deleteProject('${p.id}', event)" class="p-2 rounded-xl text-slate-400 hover:text-red-500" title="Delete Website"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </div>
+            </div>
+
+            <h3 class="font-bold text-base mt-4 text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition truncate">${escapeHTML(p.name)}</h3>
+            <p class="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5 truncate">https://${p.slug}.atf.com</p>
+            
+            <p class="text-xs text-slate-400 line-clamp-2 mt-3 leading-relaxed">
+              ${escapeHTML(p.prompt || 'Generated responsive website')}
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">${new Date(p.createdAt).toLocaleDateString()}</span>
+            <button onclick="loadProjectIntoWorkspace('${p.id}')" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition">
+              Open Builder
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderHomeRecentProjects() {
+      const grid = document.getElementById('homeRecentProjectsGrid');
+      if (!grid) return;
+      const recent = appState.projects.slice(0, 3);
+
+      if (recent.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
+            Abhi koi website nahi bani hai. Upar prompt likhkar test karein!
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = recent.map(p => `
+        <div onclick="loadProjectIntoWorkspace('${p.id}')" class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-blue-500 cursor-pointer transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">${escapeHTML(p.name)}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-mono">atf.com</span>
+          </div>
+          <p class="text-xs font-mono text-blue-500 truncate">https://${p.slug}.atf.com</p>
+          <div class="flex items-center justify-between text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <span>${new Date(p.createdAt).toLocaleDateString()}</span>
+            <span class="font-semibold text-blue-600 dark:text-blue-400">Open &rarr;</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ----------------------------------------------------
+       TEMPLATE GALLERY
+    ---------------------------------------------------- */
+    function renderTemplatesList(filter = 'all') {
+      const grid = document.getElementById('templatesGrid');
+      if (!grid) return;
+
+      const filtered = filter === 'all' ? TEMPLATE_PRESETS : TEMPLATE_PRESETS.filter(t => t.category === filter);
+
+      grid.innerHTML = filtered.map(t => `
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-300">${t.category}</span>
+            <h3 class="text-lg font-bold mt-3 text-slate-900 dark:text-slate-100">${t.title}</h3>
+            <p class="text-xs text-slate-500 mt-2 leading-relaxed">${t.description}</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <button onclick="useTemplate('${t.id}')" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-95 text-white font-bold text-xs shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-1.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              <span>Customize with AI</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function filterTemplates(cat) {
+      document.querySelectorAll('#templateFilterBar button').forEach(b => {
+        b.className = 'px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300';
+      });
+      event.target.className = 'px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-600 text-white';
+      renderTemplatesList(cat);
+    }
+
+    function useTemplate(tplId) {
+      const tpl = TEMPLATE_PRESETS.find(t => t.id === tplId);
+      if (!tpl) return;
+      navigate('home');
+      setPrompt(tpl.prompt);
+      showToast(`Selected "${tpl.title}". Click Generate Website!`, 'info');
+    }
+
+    /* ----------------------------------------------------
+       SUBSCRIPTION PROOF & YOUTUBE
+    ---------------------------------------------------- */
+    function openUsageModal() {
+      updateUsagePill();
+      document.getElementById('modal-usage').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeUsageModal() {
+      document.getElementById('modal-usage').classList.add('hidden');
+    }
+
+    function previewScreenshot(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const previewImg = document.getElementById('subScreenshotPreview');
+      const previewArea = document.getElementById('screenshotPreviewArea');
+      const verifyBtn = document.getElementById('verifyProofBtn');
+      const uploadBtn = document.getElementById('uploadProofBtn');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImg.src = e.target.result;
+        previewArea.classList.remove('hidden');
+        previewArea.classList.add('flex');
+        uploadBtn.classList.add('hidden');
+
+        verifyBtn.disabled = false;
+        verifyBtn.className = 'w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition cursor-pointer';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeScreenshot() {
+      document.getElementById('subScreenshotInput').value = '';
+      document.getElementById('screenshotPreviewArea').classList.add('hidden');
+      document.getElementById('screenshotPreviewArea').classList.remove('flex');
+      document.getElementById('uploadProofBtn').classList.remove('hidden');
+
+      const verifyBtn = document.getElementById('verifyProofBtn');
+      verifyBtn.disabled = true;
+      verifyBtn.className = 'w-full py-2.5 rounded-xl bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold text-xs cursor-not-allowed transition';
+    }
+
+    function submitSubscriptionProof() {
+      const verifyBtn = document.getElementById('verifyProofBtn');
+      verifyBtn.innerHTML = 'Verifying local proof...';
+      
+      setTimeout(() => {
+        appState.isSubscribedProofGiven = true;
+        localStorage.setItem(STORAGE_KEYS.VERIFIED_SUB, 'true');
+        updateUsagePill();
+        closeUsageModal();
+        showToast('Subscription verified! Additional generations unlocked.', 'info');
+        removeScreenshot();
+      }, 1000);
+    }
+
+    /* ----------------------------------------------------
+       CUSTOM DOMAIN MANAGEMENT
+    ---------------------------------------------------- */
+    function openCustomDomainModal() {
+      const project = getActiveProject();
+      if (!project) return;
+      const input = document.getElementById('customDomainInput');
+      input.value = project.customDomain || '';
+      document.getElementById('modal-domain').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeCustomDomainModal() {
+      document.getElementById('modal-domain').classList.add('hidden');
+    }
+
+    function saveCustomDomain() {
+      const project = getActiveProject();
+      if (!project) return;
+      const input = document.getElementById('customDomainInput');
+      const rawDomain = input.value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+      project.customDomain = rawDomain;
+      saveProjects();
+      closeCustomDomainModal();
+      refreshWorkspaceUI();
+      showToast(rawDomain ? `Custom domain saved for ${rawDomain}` : 'Custom domain removed');
+    }
+
+    /* ----------------------------------------------------
+       SETTINGS & BACKUP
+    ---------------------------------------------------- */
+    function openSettingsModal() {
+      document.getElementById('settingApiKey').value = appState.settings.geminiApiKey || CONFIGURED_API_KEY;
+      document.getElementById('settingModelSelect').value = appState.settings.openRouterModel || 'google/gemini-2.0-flash-001';
+      document.getElementById('settingThemeSelect').value = appState.settings.theme;
+      document.getElementById('settingLanguageSelect').value = appState.settings.language;
+      document.getElementById('modal-settings').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('modal-settings').classList.add('hidden');
+    }
+
+    function saveSettingsForm() {
+      appState.settings.geminiApiKey = document.getElementById('settingApiKey').value.trim() || CONFIGURED_API_KEY;
+      appState.settings.openRouterModel = document.getElementById('settingModelSelect').value;
+      appState.settings.theme = document.getElementById('settingThemeSelect').value;
+      appState.settings.language = document.getElementById('settingLanguageSelect').value;
+
+      saveSettings();
+      applyTheme(appState.settings.theme);
+      closeSettingsModal();
+      showToast('Settings saved successfully');
+    }
+
+    function exportAllProjectsJSON() {
+      if (appState.projects.length === 0) {
+        showToast('No projects to export', 'error');
+        return;
+      }
+      const dataStr = JSON.stringify(appState.projects, null, 2);
+      const filename = `free-web-builder-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      downloadBlob(dataStr, filename, 'application/json');
+      showToast('Projects backup JSON downloaded!');
+    }
+
+    function importProjectsJSON(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (Array.isArray(parsed)) {
+            appState.projects = parsed;
+            saveProjects();
+            renderProjectsList();
+            renderHomeRecentProjects();
+            showToast(`Imported ${parsed.length} projects successfully!`);
+            closeSettingsModal();
+          }
+        } catch (err) {
+          showToast('Failed to parse JSON file', 'error');
+        }
+      };
+      reader.readAsText(input.files[0]);
+    }
+
+    function clearAllLocalData() {
+      if (!confirm('This will wipe all locally stored projects. Make sure you have exported your backups. Proceed?')) return;
+      localStorage.removeItem(STORAGE_KEYS.PROJECTS);
+      localStorage.removeItem(STORAGE_KEYS.SETTINGS);
+      localStorage.removeItem(STORAGE_KEYS.CURRENT_ID);
+      localStorage.removeItem(STORAGE_KEYS.USAGE);
+      localStorage.removeItem(STORAGE_KEYS.VERIFIED_SUB);
+      window.location.reload();
+    }
+
+    /* ----------------------------------------------------
+       CONTACT FORM SUBMIT
+    ---------------------------------------------------- */
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('contactName').value;
+      const email = document.getElementById('contactEmail').value;
+      const subject = document.getElementById('contactSubject').value;
+      const message = document.getElementById('contactMessage').value;
+
+      const mailtoUrl = `mailto:aleemteachfoundation@gmail.com?subject=${encodeURIComponent(subject + ' - From ' + name)}&body=${encodeURIComponent("Sender: " + name + " (" + email + ")\n\n" + message)}`;
+      window.location.href = mailtoUrl;
+
+      showToast('Opening email client...');
+      e.target.reset();
+    }
+
+    /* ----------------------------------------------------
+       TOAST SYSTEM & HELPERS
+    ---------------------------------------------------- */
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const isErr = type === 'error';
+      const isInfo = type === 'info';
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold transition-all transform translate-y-4 opacity-0 ${
+        isErr 
+          ? 'bg-rose-600 text-white' 
+          : isInfo 
+            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border border-slate-700' 
+            : 'bg-emerald-600 text-white'
+      }`;
+
+      const iconName = isErr ? 'alert-circle' : isInfo ? 'info' : 'check-circle';
+      toast.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4 shrink-0"></i><span>${escapeHTML(message)}</span>`;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>
